@@ -17,17 +17,17 @@ spec:
         app: hybrid-cloud-frontend
     spec:
       containers:
-        - image: "<will be replaced by deploment>"
-          imagePullPolicy: "IfNotPresent"
-          name: "hybrid-cloud-frontend"
+        - image: image-registry.openshift-imageregistry.svc:5000/hybrid-cloud-demo/hybrid-cloud-demo-frontend
+          imagePullPolicy: IfNotPresent
+          name: hybrid-cloud-frontend
           ports:
             - containerPort: 8080
-              name: "http"
-              protocol: "TCP"
+              name: http
+              protocol: TCP
           resources:
             limits:
-              memory: "1200Mi"
-              cpu: "750m"
+              memory: 1200Mi
+              cpu: 750m
             requests:
-              memory: "500Mi"
-              cpu: "500m"
+              memory: 500Mi
+              cpu: 500m
