@@ -1,4 +1,4 @@
-*
+k8s/*
 !target/quarkus-app
 !target/*-runner
 !target/*-runner.jar

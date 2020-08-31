@@ -17,7 +17,7 @@ spec:
         app: hybrid-cloud-frontend
     spec:
       containers:
-        - image: image-registry.openshift-imageregistry.svc:5000/hybrid-cloud-demo/hybrid-cloud-demo-frontend
+        - image: quay.io/rhdevelopers/hybrid-cloud-demo-frontend
           imagePullPolicy: IfNotPresent
           name: hybrid-cloud-frontend
           ports:
