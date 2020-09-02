@@ -20,7 +20,7 @@ spec:
           name: hybrid-cloud-frontend
           env:
             - name: IO_OPENSHIFT_BOOSTER_MESSAGING_BACKENDSERVICE_MP_REST_URL
-              value: http://hybrid-cloud-backend:8080
+              value: http://hybrid-cloud-backend-skupper
           ports:
             - containerPort: 8080
               name: http
