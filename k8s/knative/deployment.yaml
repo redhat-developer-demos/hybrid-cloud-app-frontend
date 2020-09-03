@@ -21,6 +21,10 @@ spec:
           env:
             - name: IO_OPENSHIFT_BOOSTER_MESSAGING_BACKENDSERVICE_MP_REST_URL
               value: http://hybrid-cloud-backend-skupper
+            - name: KNATIVE_BURST
+              value: "true"
+            - name: KNATIVE_BURST_SLEEP_MILLISECONDS
+              value: "2000"
           ports:
             - containerPort: 8080
               name: http

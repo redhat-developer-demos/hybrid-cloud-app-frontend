@@ -5,9 +5,18 @@ public class Request {
     private String text;
     private boolean uppercase;
     private boolean reverse;
+    private int sleepInMillis;
 
     public String getText() {
         return text;
+    }
+
+    public int getSleepInMillis() {
+        return sleepInMillis;
+    }
+
+    public void setSleepInMillis(int sleepInMillis) {
+        this.sleepInMillis = sleepInMillis;
     }
 
     public void setText(String text) {
@@ -32,7 +41,7 @@ public class Request {
 
     @Override
     public String toString() {
-        return String.format("Request{text=%s, uppercase=%s, reverse=%s}",
-                             text, uppercase, reverse);
+        return String.format("Request{text=%s, uppercase=%s, reverse=%s}", text, uppercase,
+                reverse);
     }
 }
