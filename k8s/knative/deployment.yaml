@@ -16,7 +16,7 @@ spec:
       serviceAccountName: hybrid-cloud-demo-sa
       containers:
         - image: quay.io/rhdevelopers/hybrid-cloud-demo-frontend
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           name: hybrid-cloud-frontend
           env:
             - name: IO_OPENSHIFT_BOOSTER_MESSAGING_BACKENDSERVICE_MP_REST_URL
