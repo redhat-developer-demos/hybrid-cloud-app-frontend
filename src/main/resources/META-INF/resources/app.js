@@ -42,14 +42,14 @@ class Application {
         });
     }
 
-    fetchDataPeriodically() {
+    fetchDataPeriodically () {
         gesso.fetchPeriodically("/api/data", (data) => {
             this.data = data;
             window.dispatchEvent(new Event("statechange"));
         });
     }
 
-    sendRequest(form) {
+    sendRequest (form) {
         console.log("Sending request");
 
         let request = gesso.openRequest("POST", "/api/send-request", (event) => {
@@ -72,7 +72,7 @@ class Application {
         form.text.value = "";
     }
 
-    renderResponses() {
+    renderResponses () {
         if (this.data.requestIds.length === 0) {
             return;
         }
@@ -102,10 +102,9 @@ class Application {
         // gesso.replaceElement($("#responses"), table);
 
         gesso.replaceElement($("#responses"), div);
-
     }
 
-    renderWorkers() {
+    renderWorkers () {
         console.log("Rendering workers");
 
         if (Object.keys(this.data.workers).length === 0) {
@@ -117,25 +116,69 @@ class Application {
             return;
         }
 
-        let headings = ["ID", "Cloud", "Requests", "Errors"];
         // let headings = ["ID", "Cloud", "Updated", "Requests", "Errors"];
-        let rows = [];
-        let now = new Date().getTime();
+        let cRequestsProcessed = [];
+        let cProcessingErrors = [];
 
         for (let workerId in this.data.workers) {
             let update = this.data.workers[workerId];
-            let cloud = update.cloud;
+            let cloudId = update.cloud;
             // let time = new Date(update.timestamp).toLocaleDateString();
             let requestsProcessed = update.requestsProcessed;
             let processingErrors = update.processingErrors;
 
-            // rows.push([workerId, cloud, time, requestsProcessed, processingErrors]);
-            rows.push([workerId, cloud, requestsProcessed, processingErrors]);
+            // msgData.push([workerId, cloudId, time, requestsProcessed, processingErrors]);
+
+            if ("gce" === cloudId) {
+                cRequestsProcessed.push(["Google", requestsProcessed]);
+                cProcessingErrors.push(["Google", processingErrors ? processingErrors : 0]);
+            } else if ("aws" === cloudId) {
+                cRequestsProcessed.push(["Amazon", requestsProcessed]);
+                cProcessingErrors.push(["Amazon", processingErrors ? processingErrors : 0]);
+            } else if ("ibm" === cloudId) {
+                cRequestsProcessed.push(["IBM", requestsProcessed]);
+                cProcessingErrors.push(["IBM", processingErrors ? processingErrors : 0]);
+            } else if ("azure" === cloudId) {
+                cRequestsProcessed.push(["Azure", requestsProcessed]);
+                cProcessingErrors.push(["Azure", processingErrors ? processingErrors : 0]);
+            } else {
+                cRequestsProcessed.push(["Unknown", requestsProcessed]);
+                cProcessingErrors.push(["Unknown", processingErrors ? processingErrors : 0]);
+            }
+            //requestsProcessed.push([workerId, cloud, requestsProcessed, processingErrors]);
         }
 
-        let table = gesso.createTable(null, headings, rows, { id: "workers" });
+        //let table = gesso.createTable(null, headings, rows, { id: "workers" });
+        let eProcessedMessagesChart = gesso.createDiv(null, "#processedMessagesChart");
+        gesso.replaceElement($("#processedMessagesChart"), eProcessedMessagesChart);
 
-        gesso.replaceElement($("#workers"), table);
+        let eProcessedErrorsChart = gesso.createDiv(null, "#processedErrorsChart");
+        gesso.replaceElement($("#processedErrorsChart"), eProcessedErrorsChart);
+
+        //processed messages
+        c3.generate({
+            bindto: eProcessedMessagesChart,
+            data: {
+                columns: cRequestsProcessed,
+                type: 'donut'
+            },
+            donut: {
+                title: "Processed"
+            }
+        });
+
+        //processed errors
+        c3.generate({
+            bindto: eProcessedErrorsChart,
+            data: {
+                columns: cProcessingErrors,
+                type: 'donut'
+            },
+            donut: {
+                title: "Errors"
+            }
+        });
+
     }
 
 }
