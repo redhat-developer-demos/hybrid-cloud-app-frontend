@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
 
 //Application 
@@ -6,95 +6,65 @@ import './App.css';
 import MessageRequest from './components/MessageRequest'
 import MessageResponse from './components/MessageResponse'
 import MessageWorkers from './components/MessageWorkers'
+import computeResponses from './utils/utils';
 
-class App extends React.Component {
+const App = () => {
+  const [msgData, setMessageData] = useState(null)
+  const [responses, setResponses] = useState([]);
+  const [workers, setWorkers] = useState([]);
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      responses: [],
-      workers: [],
+  const handleResponses = () => {
+    if (msgData) {
+      const reqId = msgData.requestIds.reverse();
+      if (reqId) {
+        const resp = msgData.responses[reqId];
+        const worker = msgData.workers[resp.workerId];
+        const { responseData, workerData } = computeResponses(resp, workers, worker)
+        setResponses(_.concat(responses, responseData));
+        setWorkers(workerData);
+      }
     }
-    this.handleResponses = this.handleResponses.bind(this);
-    this.handleErrors = this.handleErrors.bind(this);
+  };
 
+  const handleErrors = (ev) => {
+    if (ev && ev.data) {
+      console.log("Error with Source", ev.data);
+    }
+  }
+
+  useEffect(() => {
     const msgEvents = new EventSource("http://localhost:8080/api/data");
-
-    msgEvents.onmessage = this.handleResponses
-    msgEvents.onerror = this.handleErrors
-  }
-
-  handleResponses (ev) {
-    if (ev.data) {
-      const rm = JSON.parse(ev.data);
-      if (rm) {
-        const reqId = rm.requestIds.reverse();
-        if (reqId) {
-          const resp = rm.responses[reqId];
-          //console.log(resp);
-          //console.log(rm.workers);
-          this.computeResponses(resp, rm.workers[resp.workerId])
-        }
+    msgEvents.onmessage = (ev) => {
+      if (ev.data) {
+        setMessageData(JSON.parse(ev.data));
+      } else {
+        setMessageData(null)
       }
-    }
-  }
+    };
+    msgEvents.onerror = (ev) => handleErrors(ev);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-  handleErrors (es, ev) {
-    console.log("Error:" + ev);
-  }
+  useEffect(() => {
+    handleResponses();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [msgData]);
 
-  computeResponses (resp, worker) {
-    //console.log("Response:", resp)
-    //console.log("Worker:", worker)
-
-    //Responses
-    let responses = this.state.responses;
-    let workers = this.state.workers;
-
-    var res = { [resp.cloudId]: { text: resp.text } };
-
-    //Workers
-    console.log("E Workers ", workers);
-
-    let wIdx = _.findIndex(workers, { [worker.cloud]: {} })
-
-    console.log("E Workers wIdx ", wIdx);
-
-    let w;
-    if (wIdx === -1) {
-      console.log("Cloud not found add count")
-      w = {
-        [worker.cloud]: {
-          requestsProcessed: worker.requestsProcessed,
-          requestErrors: worker.requestErrors ? worker.requestErrors : 0,
-        }
-      }
-    } else {
-      console.log("Cloud  found update count")
-    }
-
-    this.setState({ responses: _.concat(responses, res) });
-    this.setState({ workers: _.concat(workers, w) });
-  }
-
-  render () {
-
-    return (
-      <div id="-body">
-        <header id="-head">
-          <h2>Hybrid Cloud</h2>
-        </header>
-        <br />
-        <div id="-body-content">
-          <MessageRequest />
-          <h2>Responses</h2>
-          <MessageResponse responses={this.state.responses} />
-          <h2>Workers</h2>
-          <MessageWorkers workers={this.state.workers} />
-        </div>
+  return (
+    <div id="-body">
+      <header id="-head">
+        <h2>Hybrid Cloud</h2>
+      </header>
+      <br />
+      <div id="-body-content">
+        <MessageRequest />
+        <h2>Responses</h2>
+        <MessageResponse responses={responses} />
+        <h2>Workers</h2>
+        <MessageWorkers workers={workers} />
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default App;

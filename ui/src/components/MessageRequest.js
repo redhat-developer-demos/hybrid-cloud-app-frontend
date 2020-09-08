@@ -1,4 +1,12 @@
 import React, { useState } from "react";
+import {
+  Form,
+  FormGroup,
+  TextInput,
+  Checkbox,
+  ActionGroup,
+  Button
+} from '@patternfly/react-core';
 import axios from 'axios';
 
 const MessageRequest = () => {
@@ -6,8 +14,12 @@ const MessageRequest = () => {
   const [uppercase, setUppercase] = useState(false)
   const [reverse, setReverse] = useState(false)
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const clearState = () => {
+    setText("");
+    setUppercase(false);
+    setReverse(false);
+  }
+  const handleSubmit = () => {
     var data = { text, uppercase, reverse }
     console.log("Sending Request " + JSON.stringify(data));
 
@@ -25,31 +37,36 @@ const MessageRequest = () => {
   return (
     <div>
       <h2>Requests</h2>
-      <form id="requests" method="post" onSubmit={(event) => handleSubmit(event)}>
-        <input id="request-text"
-          type="text"
-          name="text"
-          autoFocus="autofocus"
-          onChange={(event) => setText(event.target.value)}
-          value={text} />
-        <div id="request-uppercase-option">
-          <input id="request-uppercase"
+      <Form>
+        <FormGroup label="Enter a message to send:" isRequired>
+          <TextInput type="text"
+            isRequired
+            id="text"
+            name="text"
+            autoFocus="autofocus"
+            onChange={setText}
+            value={text} />
+        </FormGroup>
+
+        <FormGroup label="Response formatting:">
+          <Checkbox id="request-uppercase"
+            label="Uppercase"
             type="checkbox"
             name="uppercase"
-            onChange={(event) => setUppercase(event.target.checked)}
-            checked={uppercase} />
-          <label htmlFor="request-uppercase">Uppercase</label>
-        </div>
-        <div id="request-reverse-option">
-          <input id="request-reverse"
+            onChange={setUppercase}
+            isChecked={uppercase} />
+          <Checkbox id="request-reverse"
+            label="Reverse"
             type="checkbox"
             name="reverse"
-            onChange={(event) => setReverse(event.target.checked)}
-            checked={reverse} />
-          <label htmlFor="request-reverse">Reverse</label>
-        </div>
-        <button type="submit">Send Request</button>
-      </form>
+            onChange={setReverse}
+            isChecked={reverse} />
+        </FormGroup>
+        <ActionGroup>
+          <Button variant="primary" onClick={handleSubmit}>Send Request</Button>
+          <Button variant="link" onClick={clearState}>Cancel</Button>
+        </ActionGroup>
+      </Form>
     </div>
   );
 }
