@@ -25,7 +25,7 @@ const MessageRequest = ({ responseHandler }) => {
     var data = { text, uppercase, reverse }
     //console.log("Sending Request " + JSON.stringify(data));
 
-    axios.post('http://localhost:8080/api/send-request', data)
+    axios.post(process.env.REACT_APP_API_URL, data)
       .then(function (response) {
         //console.log("Received response ", response);
         if (response.status === 200) {
