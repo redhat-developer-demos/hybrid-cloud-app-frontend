@@ -49,7 +49,7 @@ const MessageRequest = ({ responseHandler }) => {
             isRequired
             id="text"
             name="text"
-            autoFocus="autofocus"
+            autoFocus
             onChange={setText}
             value={text}
             maxLength="30" />

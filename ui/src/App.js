@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Divider, Flex, FlexItem } from '@patternfly/react-core';
+import { Divider, Flex, FlexItem, Title, TitleSizes } from '@patternfly/react-core';
 import _ from 'lodash';
 
 //Application 
@@ -28,26 +28,31 @@ const App = () => {
   };
 
   return (
-    <div id="-body">
-      <header id="-head">
-        <h2>Hybrid Cloud</h2>
-      </header>
+    <React.Fragment>
+      <Title headingLevel="h1" size={TitleSizes['4xl']}>
+        Hybrid Cloud Demo
+      </Title>
+      <Divider />
       <div id="-body-content">
         <MessageRequest responseHandler={handleResponses} />
       </div>
       <Divider />
-      <Flex>
-        <FlexItem>
-          <h2>Responses</h2>
+      <Flex spaceItems={{ modifier: 'spaceItemsXl' }}>
+        <FlexItem flex={{ default: 'flex_2' }}>
+          <Title headingLevel="h1" size={TitleSizes['2xl']}>
+            Responses
+          </Title>
           <MessageResponse responses={responses} />
         </FlexItem>
         <Divider isVertical />
         <FlexItem>
-          <h2>Messages</h2>
+          <Title headingLevel="h1" size={TitleSizes['2xl']}>
+            Messages
+          </Title>
           <MessageWorkers workers={workers} />
         </FlexItem>
       </Flex>
-    </div>
+    </React.Fragment>
   );
 }
 

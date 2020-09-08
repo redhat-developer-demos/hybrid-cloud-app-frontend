@@ -19,7 +19,7 @@
  *
  */
 
- * {
+* {
     margin: 1em 0;
     padding: 0;
     box-sizing: border-box;
@@ -43,7 +43,7 @@ br {
 }
 
 body {
-    font: 13pt/19pt "Source Sans Pro", sans-serif;
+    font: 1.1em "RedHatText", sans-serif;
     font-weight: 400;
     color: rgba(0, 0, 0, 0.8);
     text-rendering: optimizeLegibility;
@@ -51,7 +51,7 @@ body {
 
 code,
 pre {
-    font-family: "Ubuntu Mono", monospace;
+    font-family: "JetBrainsMono", monospace;
 }
 
 h1 {
@@ -82,7 +82,8 @@ h3.selected,
 h4.selected,
 h5.selected,
 h6.selected {
-    color: rgba(127, 0, 0, 0.8);
+    font: "RedHatDisplay";
+    color: rgba(127, 0, 0, 0.8)
 }
 
 a {
@@ -164,7 +165,7 @@ th {
 
 td em,
 th {
-    font-weight: 300;
+    font-weight: 600;
     font-style: normal;
 }
 
@@ -184,47 +185,6 @@ pre {
 
 blockquote {
     margin-left: 2em;
-}
-
-section {
-    margin: 1.5em 0;
-}
-
-span.placeholder {
-    font-style: italic;
-}
-
-.two-column {
-    -webkit-column-count: 2;
-    -moz-column-count: 2;
-    column-count: 2;
-}
-
-.three-column {
-    -webkit-column-count: 3;
-    -moz-column-count: 3;
-    column-count: 3;
-}
-
-.four-column {
-    -webkit-column-count: 4;
-    -moz-column-count: 4;
-    column-count: 4;
-}
-
-.ruled {
-    border-top: 1px solid #ddd;
-    padding-top: 2em;
-}
-
-.flex {
-    display: flex;
-    justify-content: space-between;
-}
-
-.flex > section,
-.flex > div {
-    flex: 1 0 0;
 }
 
 #-head, #-body, #-foot {
@@ -278,85 +238,6 @@ span.placeholder {
 
 #-global-navigation {
     float: right;
-}
-
-#requests {
-    font-size: 1.2em;
-    display: grid;
-    grid: "t t t t"
-          "u r x b";
-    grid-gap: 1em;
-    grid-template-columns: repeat(4, 1fr);
-}
-
-#requests > * {
-    margin: 0;
-}
-
-#requests > input[name="text"] {
-    grid-area: t;
-    width: 100%;
-    padding: 0.2em 0.4em;
-}
-
-#requests input[type="checkbox"] {
-    margin-right: 0.4em;
-}
-
-#requests > button {
-    grid-area: b;
-    font-size: 0.9em;
-    padding: 0.3em;
-}
-
-#request-uppercase-option {
-    grid-area: u;
-    font-size: 0.9em;
-    font-weight: 300;
-    padding-top: 0.3em;
-}
-
-#request-reverse-option {
-    grid-area: r;
-    font-size: 0.9em;
-    font-weight: 300;
-    padding-top: 0.3em;
-}
-
-#responses {
-    width: 100%;
-    height: 10em;
-    overflow: auto;
-    padding: 0.2em 0.4em;
-    border: 1px solid #ccc;
-}
-
-#responses > .response > .worker {
-    display: inline-block;
-    font-weight: 300;
-    width: 27%;
-}
-
-#responses > .response > .cloud {
-    display: inline-block;
-    font-weight: 300;
-    width: 15%;
-}
-
-#responses > .response > .text {
-    display: inline;
-}
-
-#workers {
-    width: 100%;
-}
-
-#workers th:nth-child(3),
-#workers th:nth-child(3),
-#workers th:nth-child(4),
-#workers td:nth-child(3),
-#workers td:nth-child(4) {
-    text-align: right;
 }
 
 @media screen and (max-width: 720px) {

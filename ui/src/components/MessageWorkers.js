@@ -27,9 +27,9 @@ const MessageWorkers = ({ workers }) => {
   }
 
   return (
-    <div>
+    <React.Fragment>
       <CloudMessagesChart workerData={chartData(workers)} />
-    </div>
+    </React.Fragment>
   );
 }
 
