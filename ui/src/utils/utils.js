@@ -1,7 +1,8 @@
 import _ from 'lodash';
 
 function computeResponses (resp, workers, worker) {
-  let workerData = []
+  let workerData = workers ? _.slice(workers) : [];
+  //console.log("WorkerData", workerData);
   let responseData = { [resp.cloudId]: { text: resp.text } };
   let wIdx = _.findIndex(workers, { [worker.cloud]: {} })
   let w;
@@ -13,9 +14,8 @@ function computeResponses (resp, workers, worker) {
         requestErrors: worker.requestErrors ? worker.requestErrors : 0,
       }
     }
-    workerData.push(w);
+    workerData = _.concat(workers, w);
   } else {
-    //console.log("Cloud found update count")
     const cw = _.nth(workers, wIdx)[worker.cloud];
     const rProcessed = worker.requestsProcessed + cw.requestsProcessed;
     const rErrors = worker.requestErrors ? worker.requestErrors : 0;
@@ -25,8 +25,8 @@ function computeResponses (resp, workers, worker) {
         requestErrors: rErrors + cw.requestErrors,
       }
     }
-    workerData = workers.splice();
     workerData[wIdx] = w;
+    //console.log("Cloud found update count", JSON.stringify(workerData))
   }
   return {
     responseData, workerData

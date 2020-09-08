@@ -9,11 +9,8 @@ import javax.inject.Inject;
 import com.redhat.developers.demo.data.Data;
 import com.redhat.developers.demo.data.Message;
 import com.redhat.developers.demo.data.Request;
-import org.eclipse.microprofile.reactive.messaging.Incoming;
-import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import io.smallrye.mutiny.Uni;
-import io.smallrye.reactive.messaging.annotations.Broadcast;
 
 @ApplicationScoped
 public class BackendService {
@@ -31,9 +28,6 @@ public class BackendService {
   @RestClient
   BackendServiceClient backendServiceClient;
 
-  @Incoming("send-request")
-  @Outgoing("processed-message")
-  @Broadcast
   public Uni<Data> processMessage(Request request) {
     LOGGER.log(Level.FINE, "Backend Processing message {0}", request);
 

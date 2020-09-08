@@ -1,16 +1,16 @@
 import React from 'react';
 import { ChartDonut, ChartThemeColor } from '@patternfly/react-charts';
 
-const CloudMessagesChart = (workers) => {
+const CloudMessagesChart = ({ workerData }) => {
   return (
     <div style={{ height: '230px', width: '350px' }}>
       <ChartDonut
         ariaDesc="Processed Messages"
         ariaTitle="Responses"
         constrainToVisibleArea={true}
-        data={[]}
+        data={workerData.data}
         labels={({ datum }) => `${datum.x}: ${datum.y}%`}
-        legendData={[]}
+        legendData={workerData.legendData}
         legendOrientation="vertical"
         legendPosition="right"
         padding={{
@@ -20,7 +20,7 @@ const CloudMessagesChart = (workers) => {
           top: 20
         }}
         subTitle="Processed Messages"
-        title="0"
+        title={workerData.title}
         themeColor={ChartThemeColor.multiOrdered}
         width={350}
       />

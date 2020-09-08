@@ -9,7 +9,7 @@ import {
 } from '@patternfly/react-core';
 import axios from 'axios';
 
-const MessageRequest = () => {
+const MessageRequest = ({ responseHandler }) => {
   const [text, setText] = useState("")
   const [uppercase, setUppercase] = useState(false)
   const [reverse, setReverse] = useState(false)
@@ -19,14 +19,21 @@ const MessageRequest = () => {
     setUppercase(false);
     setReverse(false);
   }
-  const handleSubmit = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    //TODO prevet SQL  Injection, JS Injection 
     var data = { text, uppercase, reverse }
-    console.log("Sending Request " + JSON.stringify(data));
+    //console.log("Sending Request " + JSON.stringify(data));
 
     axios.post('http://localhost:8080/api/send-request', data)
       .then(function (response) {
-        if (response.status === 202) {
-          console.log("Successfully sent message");
+        //console.log("Received response ", response);
+        if (response.status === 200) {
+          if (response.data) {
+            responseHandler(response.data);
+          } else {
+            console.log("No data in response");
+          }
         }
       })
       .catch(function (error) {
@@ -36,8 +43,7 @@ const MessageRequest = () => {
 
   return (
     <div>
-      <h2>Requests</h2>
-      <Form>
+      <Form onSubmit={handleSubmit}>
         <FormGroup label="Enter a message to send:" isRequired>
           <TextInput type="text"
             isRequired
@@ -45,7 +51,8 @@ const MessageRequest = () => {
             name="text"
             autoFocus="autofocus"
             onChange={setText}
-            value={text} />
+            value={text}
+            maxLength="30" />
         </FormGroup>
 
         <FormGroup label="Response formatting:">
@@ -63,7 +70,9 @@ const MessageRequest = () => {
             isChecked={reverse} />
         </FormGroup>
         <ActionGroup>
-          <Button variant="primary" onClick={handleSubmit}>Send Request</Button>
+          <Button variant="primary"
+            onClick={handleSubmit}
+            isDisabled={text.length === 0}>Send Request</Button>
           <Button variant="link" onClick={clearState}>Cancel</Button>
         </ActionGroup>
       </Form>
