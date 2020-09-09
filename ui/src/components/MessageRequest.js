@@ -42,9 +42,10 @@ const MessageRequest = ({ responseHandler }) => {
   }
 
   return (
-    <div>
-      <Form onSubmit={handleSubmit}>
-        <FormGroup label="Enter a message to send:" isRequired>
+    <React.Fragment>
+      <h2 className="pf-c-title pf-m-lg">&nbsp;</h2>
+      <Form isHorizontal onSubmit={handleSubmit}>
+        <FormGroup label="Enter a message:" isRequired>
           <TextInput type="text"
             isRequired
             id="text"
@@ -69,14 +70,14 @@ const MessageRequest = ({ responseHandler }) => {
             onChange={setReverse}
             isChecked={reverse} />
         </FormGroup>
-        <ActionGroup>
+        <ActionGroup className="pf-u-float-right">
           <Button variant="primary"
             onClick={handleSubmit}
             isDisabled={text.length === 0}>Send Request</Button>
           <Button variant="link" onClick={clearState}>Cancel</Button>
         </ActionGroup>
       </Form>
-    </div>
+    </React.Fragment>
   );
 }
 

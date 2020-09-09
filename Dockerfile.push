@@ -1,6 +1,16 @@
+FROM docker.io/nodeshift/ubi8-s2i-web-app:latest as ui-builder
+
+ENV YARN_ENABLED=true
+
+Add ui/ /tmp/src
+
+RUN ${STI_SCRIPTS_PATH}/assemble
+
 FROM docker.io/maven:3.6.3-openjdk-11-slim as builder
 
 ADD . .
+
+COPY --from=ui-builder /opt/app-root/output/ src/main/resources/META-INF/resources/
 
 RUN mvn -DskipTests clean package
 
