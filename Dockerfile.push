@@ -6,14 +6,14 @@
 
 # RUN ${STI_SCRIPTS_PATH}/assemble
 
-FROM docker.io/maven:3.6.3-openjdk-11-slim as builder
+FROM docker.io/maven:3.6.3-openjdk-11-slim as java-builder
 
 ADD . .
 
-COPY --from=ui-builder /opt/app-root/output/ src/main/resources/META-INF/resources/
+# COPY --from=ui-builder /opt/app-root/output/ src/main/resources/META-INF/resources/
 
 RUN mvn -DskipTests clean package
 
 FROM registry.access.redhat.com/ubi8/openjdk-11
 
-COPY --from=builder target/quarkus-app /deployments/
+COPY --from=java-builder target/quarkus-app /deployments/
