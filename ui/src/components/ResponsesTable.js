@@ -23,6 +23,7 @@ const RenderPagination = ({
     onSetPage={handleSetPage}
     onPerPageSelect={handlePerPageSelect}
     perPageOptions={[
+      { title: "3", value: 3 },
       { title: "5", value: 5 },
       { title: "10", value: 10 },
       { title: "15", value: 15 },
@@ -31,7 +32,7 @@ const RenderPagination = ({
   />);
 }
 const ResponsesTable = ({ rows }) => {
-  const defaultPerPage = 2;
+  const defaultPerPage = 3;
   const columns = ['Response', 'Cloud'];
   const [perPage, setPerPage] = useState(defaultPerPage)
   const [pageRows, setPageRows] = useState(rows.slice(0, defaultPerPage))
