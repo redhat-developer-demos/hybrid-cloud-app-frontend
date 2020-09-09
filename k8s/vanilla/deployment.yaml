@@ -15,11 +15,11 @@ spec:
     spec:
       serviceAccountName: hybrid-cloud-demo-sa
       containers:
-        - image: quay.io/rhdevelopers/hybrid-cloud-demo-frontend
+        - image: quay.io/rhdevelopers/hybrid-cloud-demo-frontend:v2
           imagePullPolicy: IfNotPresent
           name: hybrid-cloud-frontend
           env:
-            - name: IO_OPENSHIFT_BOOSTER_MESSAGING_BACKENDSERVICE_MP_REST_URL
+            - name: COM_REDHAT_DEVELOPERS_DEMO_SERVICE_BACKENDSERVICECLIENT_MP_REST_URL
               value: http://hybrid-cloud-backend:8080
           ports:
             - containerPort: 8080

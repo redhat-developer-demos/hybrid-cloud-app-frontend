@@ -24,7 +24,7 @@ const MessageRequest = ({ responseHandler }) => {
     //TODO prevet SQL  Injection, JS Injection 
     var data = { text, uppercase, reverse }
     //console.log("Sending Request " + JSON.stringify(data));
-
+    clearState();
     axios.post(process.env.REACT_APP_API_URL, data)
       .then(function (response) {
         //console.log("Received response ", response);

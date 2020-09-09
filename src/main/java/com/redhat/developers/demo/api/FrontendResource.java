@@ -33,13 +33,13 @@ public class FrontendResource {
   @Consumes(MediaType.APPLICATION_JSON)
   public Uni<Data> sendRequest(Request request) {
     LOGGER.log(Level.FINE, "Sending message {0}", request);
-    if (knativeBurst) {
-      try {
-        TimeUnit.MILLISECONDS.sleep(knativeBurstSleepInMillis);
-      } catch (InterruptedException e) {
-        // Nothing to do
-      }
-    }
+    // if (knativeBurst) {
+    // try {
+    // TimeUnit.MILLISECONDS.sleep(knativeBurstSleepInMillis);
+    // } catch (InterruptedException e) {
+    // // Nothing to do
+    // }
+    // }
     return backendService.processMessage(request);
   }
 

@@ -1,3 +1,4 @@
+# TODO #1 make this build work to build the ui and java app together
 # FROM docker.io/nodeshift/ubi8-s2i-web-app:latest as ui-builder
 
 # ENV YARN_ENABLED=true
