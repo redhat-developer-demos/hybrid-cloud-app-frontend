@@ -56,31 +56,20 @@ public class BackendService {
   void saveData(Data data) {
     try {
       LOGGER.log(Level.FINE, "Saving Processed message: {0} ", data);
-      data.persist();
+      data.persistAndFlush();
+      var requestId = data.requestId;
       var workerId = data.workerId;
       var cloud = data.cloud;
-      LOGGER.log(Level.FINE, "Checking Cloud worker with WorkerId:{0} and Cloud: {1} ",
-          new Object[] {workerId, cloud});
-      Optional<CloudWorker> optCloudWorker =
-          CloudWorker.find("workerId = :workerId and cloud = :cloud",
-              Parameters.with("workerId", workerId).and("cloud", cloud)).singleResultOptional();
-      optCloudWorker.ifPresentOrElse(cw -> {
-        LOGGER.log(Level.FINE, "Updating CloudWorker: {0} ", cw);
-        cw.requestsProcessed += 1;
-        cw.timestamp = LocalDateTime.now();
-        cw.persist();
-      }, () -> {
-        var cw = new CloudWorker();
-        cw.cloud = data.cloud;
-        cw.requestsProcessed = 1;
-        cw.workerId = data.workerId;
-        cw.timestamp = LocalDateTime.now();
-        LOGGER.log(Level.FINE, "Adding new CloudWorker: {0} ", cw);
-        cw.persist();
-      });
-    } catch (
-
-    Exception e) {
+      var cw = new CloudWorker();
+      cw.cloud = cloud;
+      cw.requestsProcessed = 1;
+      cw.requestId = requestId;
+      cw.workerId = workerId;
+      cw.timestamp = LocalDateTime.now();
+      LOGGER.log(Level.FINE, "Adding new CloudWorker Data {0} for request: {0} ",
+          new Object[] {cw, requestId});
+      cw.persist();
+    } catch (Exception e) {
       LOGGER.log(Level.SEVERE, "Error saving request: {0} ", e);
     }
   }

@@ -11,6 +11,7 @@ import io.quarkus.hibernate.orm.panache.PanacheEntity;
     query = "select cw.cloud,sum(cw.requestsProcessed) from CloudWorker as cw group by cw.cloud")
 public class CloudWorker extends PanacheEntity {
 
+  public String requestId;
   public String workerId;
   public String cloud;
   public long requestsProcessed;
@@ -22,7 +23,7 @@ public class CloudWorker extends PanacheEntity {
 
   @Override
   public String toString() {
-    return String.format("CloudWorker{workerId=%s, cloud=%s, requestsProcessed=%s}", workerId,
-        cloud, requestsProcessed);
+    return String.format("CloudWorker{requestId=%s,workerId=%s, cloud=%s, requestsProcessed=%s}",
+        requestId, workerId, cloud, requestsProcessed);
   }
 }

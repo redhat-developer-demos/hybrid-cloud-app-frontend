@@ -13,8 +13,8 @@ const MessageWorkers = () => {
     let title = 0;
     if (workers && workers.length > 0) {
       workers.forEach(object => {
-        const cloud = object['cloud']
-        const rp = object['requestsProcessed'];
+        const cloud = object[0]
+        const rp = object[1];
         //console.log(`${cloud}: ${rp}`);
         title += rp;
         data.push({ x: cloud, y: rp })
