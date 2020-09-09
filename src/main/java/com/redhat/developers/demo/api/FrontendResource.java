@@ -42,7 +42,6 @@ public class FrontendResource {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response sendRequest(Request request) {
     LOGGER.log(Level.FINE, "Sending message {0}", request);
-    bus.sendAndForget("send-request", request);
     if (knativeBurst) {
       try {
         TimeUnit.MILLISECONDS.sleep(knativeBurstSleepInMillis);
@@ -50,6 +49,7 @@ public class FrontendResource {
         // Nothing to do
       }
     }
+    bus.sendAndForget("send-request", request);
     return Response.accepted().build();
   }
 
@@ -64,8 +64,14 @@ public class FrontendResource {
   @Path("/data/workers")
   @Produces(MediaType.APPLICATION_JSON)
   public Response workers() {
-    return Response.ok().entity(CloudWorker.listAll(Sort.by("timestamp", Direction.Descending)))
-        .build();
+    return Response.ok().entity(CloudWorker.listAll()).build();
+  }
+
+  @GET
+  @Path("/data/cloud/workers")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response cloudWorkers() {
+    return Response.ok().entity(CloudWorker.workersByCloud()).build();
   }
 
 }

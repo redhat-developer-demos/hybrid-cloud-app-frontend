@@ -3,6 +3,7 @@ import {
   Table,
   TableHeader,
   TableBody,
+  cellWidth,
 } from '@patternfly/react-table';
 import { EmptyState, EmptyStateBody, Title, EmptyStateIcon, Pagination } from '@patternfly/react-core';
 import FlagsIcon from '@patternfly/react-icons/dist/js/icons/messages-icon';
@@ -23,8 +24,7 @@ const RenderPagination = ({
     onSetPage={handleSetPage}
     onPerPageSelect={handlePerPageSelect}
     perPageOptions={[
-      { title: "3", value: 3 },
-      { title: "5", value: 5 },
+      { title: "7", value: 7 },
       { title: "10", value: 10 },
       { title: "15", value: 15 },
       { title: '20', value: 20 }
@@ -32,8 +32,17 @@ const RenderPagination = ({
   />);
 }
 const ResponsesTable = ({ rows }) => {
-  const defaultPerPage = 3;
-  const columns = ['Response', 'Cloud'];
+  const defaultPerPage = 7;
+  const columns = [
+    {
+      title: 'Response',
+      transforms: [cellWidth(10)]
+    },
+    {
+      title: 'Cloud',
+      transforms: [cellWidth(10)]
+    }
+  ];
   const [perPage, setPerPage] = useState(defaultPerPage)
   const [pageRows, setPageRows] = useState([])
   const [page, setPage] = useState(1)
@@ -66,7 +75,9 @@ const ResponsesTable = ({ rows }) => {
         handlePerPageSelect={handlePerPageSelect}
         handleSetPage={handleSetPage}
       />
-      <Table aria-label="Responses" cells={columns} rows={currentRows}>
+      <Table aria-label="Responses"
+        cells={columns}
+        rows={currentRows}>
         <TableHeader className={styles.modifiers.nowrap} />
         <TableBody />
       </Table>
