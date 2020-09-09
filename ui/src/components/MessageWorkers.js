@@ -1,22 +1,24 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from 'axios';
+
 import CloudMessagesChart from './CloudMessagesChart'
 
-const MessageWorkers = ({ workers }) => {
+const MessageWorkers = () => {
+  const [workers, setWorkers] = useState([]);
 
-  const chartData = (workers) => {
+  const chartData = () => {
     //console.log("Workers", JSON.stringify(workers))
     const data = [];
     const legendData = [];
     let title = 0;
     if (workers && workers.length > 0) {
       workers.forEach(object => {
-        for (const [key, value] of Object.entries(object)) {
-          const rp = value['requestsProcessed'];
-          //console.log(`${key}: ${rp}`);
-          title += rp;
-          data.push({ x: key, y: rp })
-          legendData.push({ name: `${key}: ${rp}` });
-        }
+        const cloud = object['cloud']
+        const rp = object['requestsProcessed'];
+        //console.log(`${cloud}: ${rp}`);
+        title += rp;
+        data.push({ x: cloud, y: rp })
+        legendData.push({ name: `${cloud}: ${rp}` });
       });
       const chartData = { data, legendData, title }
       //console.log("Rows", JSON.stringify(chartData))
@@ -26,9 +28,32 @@ const MessageWorkers = ({ workers }) => {
     return { data: [], legendData: [], title };
   }
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      axios.get(process.env.REACT_APP_API_WORKER_URL)
+        .then(function (response) {
+          if (response.status === 200) {
+            if (response.data) {
+              setWorkers(response.data);
+            } else {
+              console.log("No worker data data in response");
+            }
+          }
+        })
+        .catch(function (error) {
+          console.log("Error getting worker data", error);
+        });
+
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
   return (
     <React.Fragment>
-      <CloudMessagesChart workerData={chartData(workers)} />
+      <CloudMessagesChart workerData={chartData()} />
     </React.Fragment>
   );
 }

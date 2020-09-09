@@ -1,22 +1,26 @@
 package com.redhat.developers.demo.service;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
+import com.redhat.developers.demo.data.CloudWorker;
 import com.redhat.developers.demo.data.Data;
 import com.redhat.developers.demo.data.Message;
 import com.redhat.developers.demo.data.Request;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-import io.smallrye.mutiny.Uni;
+import io.quarkus.panache.common.Parameters;
+import io.quarkus.vertx.ConsumeEvent;
 
 @ApplicationScoped
 public class BackendService {
 
   private static final Logger LOGGER = Logger.getLogger(BackendService.class.getName());
-
 
   private final AtomicInteger requestSequence = new AtomicInteger(0);
 
@@ -28,21 +32,61 @@ public class BackendService {
   @RestClient
   BackendServiceClient backendServiceClient;
 
-  public Uni<Data> processMessage(Request request) {
+  @ConsumeEvent("send-request")
+  public void processMessage(Request request) {
     LOGGER.log(Level.FINE, "Backend Processing message {0}", request);
 
     var requestId = generateRequestId();
     var message = new Message(requestId, request);
 
-    return backendServiceClient.sendMessage(message).onItem().transform(r -> {
+    backendServiceClient.sendMessage(message).onItem().transform(r -> {
+      LOGGER.log(Level.FINE, "Processing response: {0} ", r);
       var data = new Data();
-      data.addRequestId(requestId);
-      data.putResponse(requestId, r);
-      data.updateWorker(r.getWorkerId(), r.getCloudId());
-
-      LOGGER.log(Level.FINE, "Sending Processed message {0}", data);
+      data.requestId = requestId;
+      data.response = r.getText();
+      data.cloud = r.getCloudId();
+      data.workerId = r.getWorkerId();
+      data.timestamp = LocalDateTime.now();
       return data;
-    });
+    }).subscribe().with(this::saveData, this::logError);
+
+  }
+
+  @Transactional
+  void saveData(Data data) {
+    try {
+      LOGGER.log(Level.FINE, "Saving Processed message: {0} ", data);
+      data.persist();
+      var workerId = data.workerId;
+      var cloud = data.cloud;
+      LOGGER.log(Level.FINE, "Checking Cloud worker with WorkerId:{0} and Cloud: {1} ",
+          new Object[] {workerId, cloud});
+      Optional<CloudWorker> optCloudWorker =
+          CloudWorker.find("workerId = :workerId and cloud = :cloud",
+              Parameters.with("workerId", workerId).and("cloud", cloud)).singleResultOptional();
+      optCloudWorker.ifPresentOrElse(cw -> {
+        LOGGER.log(Level.FINE, "Updating CloudWorker: {0} ", cw);
+        cw.requestsProcessed += 1;
+        cw.timestamp = LocalDateTime.now();
+        cw.persist();
+      }, () -> {
+        var cw = new CloudWorker();
+        cw.cloud = data.cloud;
+        cw.requestsProcessed = 1;
+        cw.workerId = data.workerId;
+        cw.timestamp = LocalDateTime.now();
+        LOGGER.log(Level.FINE, "Adding new CloudWorker: {0} ", cw);
+        cw.persist();
+      });
+    } catch (
+
+    Exception e) {
+      LOGGER.log(Level.SEVERE, "Error saving request: {0} ", e);
+    }
+  }
+
+  void logError(Throwable e) {
+    LOGGER.log(Level.SEVERE, "Error processing request: {0} ", e);
   }
 
   String generateRequestId() {

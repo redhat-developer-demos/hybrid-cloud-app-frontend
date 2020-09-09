@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   TableHeader,
@@ -35,7 +35,7 @@ const ResponsesTable = ({ rows }) => {
   const defaultPerPage = 3;
   const columns = ['Response', 'Cloud'];
   const [perPage, setPerPage] = useState(defaultPerPage)
-  const [pageRows, setPageRows] = useState(rows.slice(0, defaultPerPage))
+  const [pageRows, setPageRows] = useState([])
   const [page, setPage] = useState(1)
 
   const handlePerPageSelect = (_evt, newPerPage, newPage, startIdx, endIdx) => {
@@ -51,7 +51,11 @@ const ResponsesTable = ({ rows }) => {
     setPageRows(rows.slice(startIdx, endIdx));
   };
 
-  const currentRows = rows.map((row) => ({ cells: row.cells }));
+  useEffect(() => {
+    setPageRows(rows.length > defaultPerPage ? rows.slice(0, defaultPerPage) : rows)
+  }, [rows, defaultPerPage, setPageRows]);
+
+  const currentRows = pageRows.map((row) => ({ cells: row.cells }));
 
   return (
     <React.Fragment>
@@ -66,7 +70,7 @@ const ResponsesTable = ({ rows }) => {
         <TableHeader className={styles.modifiers.nowrap} />
         <TableBody />
       </Table>
-      {pageRows.length <= 0 &&
+      {rows.length <= 0 &&
         <EmptyState>
           <EmptyStateIcon icon={FlagsIcon} />
           <Title headingLevel="h2" size="lg">

@@ -9,7 +9,7 @@ import {
 } from '@patternfly/react-core';
 import axios from 'axios';
 
-const MessageRequest = ({ responseHandler }) => {
+const MessageRequest = () => {
   const [text, setText] = useState("")
   const [uppercase, setUppercase] = useState(false)
   const [reverse, setReverse] = useState(false)
@@ -27,13 +27,8 @@ const MessageRequest = ({ responseHandler }) => {
     clearState();
     axios.post(process.env.REACT_APP_API_URL, data)
       .then(function (response) {
-        //console.log("Received response ", response);
-        if (response.status === 200) {
-          if (response.data) {
-            responseHandler(response.data);
-          } else {
-            console.log("No data in response");
-          }
+        if (response.status === 202) {
+          //console.log("Message sent!");
         }
       })
       .catch(function (error) {
