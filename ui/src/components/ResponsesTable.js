@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableHeader,
@@ -34,25 +34,23 @@ const ResponsesTable = ({ rows }) => {
   const defaultPerPage = 2;
   const columns = ['Response', 'Cloud'];
   const [perPage, setPerPage] = useState(defaultPerPage)
-  const [pageRows, setPageRows] = useState([])
+  const [pageRows, setPageRows] = useState(rows.slice(0, defaultPerPage))
   const [page, setPage] = useState(1)
 
   const handlePerPageSelect = (_evt, newPerPage, newPage, startIdx, endIdx) => {
-    console.log("handlePerPageSelect", rows)
+    //console.log("handlePerPageSelect", rows)
     setPerPage(newPerPage);
     setPage(newPage);
-    setPageRows(rows.splice(startIdx, endIdx));
+    setPageRows(rows.slice(startIdx, endIdx));
   };
 
   const handleSetPage = (__evt, newPage, perPage, startIdx, endIdx) => {
-    console.log("handleSetPage", rows)
+    //console.log("handleSetPage", rows)
     setPage(newPage);
-    setPageRows(rows.splice(startIdx, endIdx));
+    setPageRows(rows.slice(startIdx, endIdx));
   };
 
-  // useEffect(() => {
-  //   setPageRows(rows.splice(0, perPage));
-  // }, [])
+  const currentRows = rows.map((row) => ({ cells: row.cells }));
 
   return (
     <React.Fragment>
@@ -63,7 +61,7 @@ const ResponsesTable = ({ rows }) => {
         handlePerPageSelect={handlePerPageSelect}
         handleSetPage={handleSetPage}
       />
-      <Table aria-label="Responses" cells={columns} rows={pageRows}>
+      <Table aria-label="Responses" cells={columns} rows={currentRows}>
         <TableHeader className={styles.modifiers.nowrap} />
         <TableBody />
       </Table>
