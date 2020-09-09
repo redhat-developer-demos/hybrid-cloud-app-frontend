@@ -1,10 +1,10 @@
-FROM docker.io/nodeshift/ubi8-s2i-web-app:latest as ui-builder
+# FROM docker.io/nodeshift/ubi8-s2i-web-app:latest as ui-builder
 
-ENV YARN_ENABLED=true
+# ENV YARN_ENABLED=true
 
-Add ui/ /tmp/src
+# Add ui/ /tmp/src
 
-RUN ${STI_SCRIPTS_PATH}/assemble
+# RUN ${STI_SCRIPTS_PATH}/assemble
 
 FROM docker.io/maven:3.6.3-openjdk-11-slim as builder
 
