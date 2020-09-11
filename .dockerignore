@@ -3,3 +3,5 @@ k8s/*
 !target/*-runner
 !target/*-runner.jar
 !target/lib/*
+ui/node_modules
+ui/build

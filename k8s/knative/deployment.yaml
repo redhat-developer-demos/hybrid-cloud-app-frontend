@@ -3,6 +3,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: hybrid-cloud-frontend
+  annotations:
+    image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"hybrid-cloud-frontend:v2"},"fieldPath":"spec.template.spec.containers[?(@.name==\"hybrid-cloud-frontend\")].image"}]'
 spec:
   replicas: 1
   selector:
@@ -15,11 +17,11 @@ spec:
     spec:
       serviceAccountName: hybrid-cloud-demo-sa
       containers:
-        - image: quay.io/rhdevelopers/hybrid-cloud-demo-frontend
+        - name: hybrid-cloud-frontend
+          image: hybrid-cloud-demo-frontend
           imagePullPolicy: Always
-          name: hybrid-cloud-frontend
           env:
-            - name: IO_OPENSHIFT_BOOSTER_MESSAGING_BACKENDSERVICE_MP_REST_URL
+            - name: COM_REDHAT_DEVELOPERS_DEMO_SERVICE_BACKENDSERVICECLIENT_MP_REST_URL
               value: http://hybrid-cloud-backend-skupper
             - name: KNATIVE_BURST
               value: "true"
