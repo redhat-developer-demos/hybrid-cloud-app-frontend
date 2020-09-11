@@ -1,0 +1,11 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: hybrid-cloud-frontend
+spec:
+  port:
+    targetPort: 8080
+  tls:
+    termination: edge
+  to:
+    name: hybrid-cloud-frontend
