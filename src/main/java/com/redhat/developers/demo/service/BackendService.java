@@ -1,7 +1,6 @@
 package com.redhat.developers.demo.service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -14,7 +13,6 @@ import com.redhat.developers.demo.data.Data;
 import com.redhat.developers.demo.data.Message;
 import com.redhat.developers.demo.data.Request;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-import io.quarkus.panache.common.Parameters;
 import io.quarkus.vertx.ConsumeEvent;
 
 @ApplicationScoped
